@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+ln -f .code.tio .code.tio.c
+/opt/c-tcc/bin/tcc "${TIO_CFLAGS[@]}" -run .code.tio.c "$@" < .input.tio

@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+/opt/forte/bin/forter .code.tio "$@" < .input.tio

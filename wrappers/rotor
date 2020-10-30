@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+groovy -classpath /opt/rotor /opt/rotor/RotorEval.groovy .code.tio "$@" < .input.tio

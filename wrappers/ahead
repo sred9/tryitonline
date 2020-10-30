@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+/opt/ahead/build/install/ahead/bin/ahead .code.tio "$@" < .input.tio

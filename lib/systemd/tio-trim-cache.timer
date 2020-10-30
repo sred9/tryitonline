@@ -1,0 +1,8 @@
+[Unit]
+Description=Trim TIO's output cache
+
+[Timer]
+OnCalendar=hourly
+
+[Install]
+WantedBy=timers.target

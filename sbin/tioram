@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+set -o errexit -o nounset -o xtrace
+
+bytes=$(free --bytes | awk --assign factor=$1 '($1 == "Mem:"){print int(factor * $2)}')
+
+if [[ -e /dev/zram0 ]]; then
+	swapoff /dev/zram0 || true
+	rmmod zram
+fi
+
+if (( bytes > 0 )); then
+	modprobe zram
+	nproc --all > /sys/block/zram0/max_comp_streams
+	echo $bytes > /sys/block/zram0/disksize
+	mkswap /dev/zram0
+	swapon /dev/zram0
+fi

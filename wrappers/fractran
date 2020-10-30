@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+/opt/fractran/ffi "${TIO_OPTIONS[@]}" .code.tio "$@" < .input.tio

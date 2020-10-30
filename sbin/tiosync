@@ -1,0 +1,67 @@
+#!/usr/bin/env bash
+
+set -o errexit -o nounset -o pipefail
+
+set -- $(getopt np: "$@")
+
+noreboot=0
+root=/
+
+while true; do
+	case "$1" in
+		-n)
+			noreboot=1
+			echo "Disabled automatic reboot."
+			shift 1
+			;;
+		-p)
+			root="$(readlink -f "$2")"
+			shift 2
+			;;
+		--)
+			shift 1
+			break
+			;;
+		*)
+			echo "$0: Usage: $0 [-n] [-p PATH] HOST..." >&2
+			exit 1
+			;;
+	esac
+done
+
+for host in "$@"; do
+	reenable=1
+	tiopool disable "$host" 2> /dev/null || reenable=0
+
+	echo -n "Syncing '$host:$root'..."
+
+	if [[ "$root" = / ]]; then
+		cat /srv/var/sync/exclude/*
+	else
+		sed -n "s/^${root//\//\\/}\///p" /srv/var/sync/exclude/*
+	fi \
+		| rsync --archive --delete --exclude-from=- --hard-links --sparse --xattrs "$root/" "$host:$root"
+
+	echo " done."
+
+	if ((noreboot == 0)); then
+		ssh "$host" "grub2-mkconfig -o /boot/grub/grub.cfg && reboot" || true
+		echo -n "Waiting for $host to reboot..."
+
+		while ping -c 1 -w 1 "$host" &> /dev/null; do
+			sleep 1
+		done
+
+		sleep 5
+
+		while ! ssh -o ConnectTimeout=1 -o ConnectionAttempts=1 "$host" : &> /dev/null; do
+			sleep 1
+		done
+
+		echo " done."
+
+		scp /etc/hosts "$host:/etc/" > /dev/null
+	fi
+
+	((reenable)) && tiopool enable "$host"
+done

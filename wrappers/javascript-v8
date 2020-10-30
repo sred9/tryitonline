@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+export LD_LIBRARY_PATH="/opt/javascript-v8/usr/lib64:$LD_LIBRARY_PATH"
+/opt/javascript-v8/usr/bin/d8 "${TIO_OPTIONS[@]}" .code.tio "$@" < .input.tio

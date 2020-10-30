@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+/opt/vsl/vsl build "${TIO_CFLAGS[@]}" -o .bin.tio .code.tio >&2
+./.bin.tio "$@" < .input.tio

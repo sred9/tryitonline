@@ -1,0 +1,16 @@
+.*
+!.gitignore
+!.tiobuild
+
+__pycache__/
+cache/
+store/
+tmp/
+
+etc/*
+!etc/*.default
+
+var/*
+!var/sync/exclude/_always
+
+*-dev*

@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+
+set -o errexit -o nounset -o pipefail
+
+error()
+{
+	echo "$0: error: $1" >&2
+	false
+}
+
+tiosubst()
+{
+	if [[ "$file" = languages.json ]]; then
+		jq "$jq_filter" "$1"
+	elif [[ $(file --brief --mime-type "$file") =~ ^text/ ]]; then
+		envsubst "$(printf '$%s ' ${!tio_*})" < "$1"
+	else
+		cat "$1"
+	fi
+}
+
+wordalize()
+{
+	printf -v $2 ${!1//[^0-9A-Za-z]/_}
+}
+
+cd /srv/usr/share/tio.run
+destination=/srv/var/www/$1
+source /srv/lib/crypto
+source /srv/lib/conf
+load_conf tiobuild jq_filter
+declare -A hashes
+declare -l name
+
+while read -r path; do
+	dir=$(dirname "$path")
+	file=$(basename "$path")
+	wordalize path name
+	hash=$(tiosubst "$path" | tiohash 16 | hex)
+	hashes[$name]=$hash
+	export tio_$name=$hash-$file
+done < .tiobuild
+
+while read -r path; do
+	dir=$(dirname "$path")
+	file=$(basename "$path")
+	wordalize path name
+	mkdir --parents "$destination/$dir/static"
+	uuid=$destination/$dir/static/${hashes[$name]}-$file
+	if ! [[ -f "$uuid" ]]; then
+		tiosubst "$path" > "$uuid"
+		chmod --reference="$path" "$uuid"
+	fi
+	ln --force --symbolic "$uuid" "$destination/$path"
+done < .tiobuild
+
+restorecon -R "$destination"

@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+/opt/snowman/snowman .code.tio "$@" < .input.tio

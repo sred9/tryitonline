@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+ln -f .code.tio code.nim
+nim c "${TIO_CFLAGS[@]}" -o:.bin.tio -d:release code >&2
+./.bin.tio "$@" < .input.tio

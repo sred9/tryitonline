@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+/opt/r/bin/Rscript .code.tio "$@" < .input.tio

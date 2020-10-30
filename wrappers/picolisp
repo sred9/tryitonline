@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+/opt/picolisp/pil .code.tio "$@" < .input.tio

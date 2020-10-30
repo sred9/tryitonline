@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+/opt/tir/tir -u .code.tio "$@" < .input.tio

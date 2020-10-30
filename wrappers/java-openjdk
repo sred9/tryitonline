@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+count()
+{
+	echo $#;
+}
+
+ln -f .code.tio "${TIO_CLASS:-Main}.java"
+rm -f *.class
+javac "${TIO_CFLAGS[@]}" "${TIO_CLASS:-Main}.java"
+shopt -s nullglob
+
+if (($(count *.class) == 1)); then
+	printf -v class %s *.class
+	java "${TIO_OPTIONS[@]}" "${class%.class}" "$@" < .input.tio
+else
+	java "${TIO_OPTIONS[@]}" "${TIO_CLASS:-Main}" "$@" < .input.tio
+fi

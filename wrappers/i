@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+/opt/i/I < .code.tio "$@"

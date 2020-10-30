@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+export NODE_PATH="/usr/lib/node_modules"
+
+node /opt/stacked/stacked.js .code.tio "$@" < .input.tio

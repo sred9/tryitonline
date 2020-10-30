@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+/opt/v/v .code.tio -f .input.tio -x "$@"

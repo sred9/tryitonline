@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+ln -fst . /opt/rprogn/lua_implementation/*
+lua main.lua .code.tio "$@" < .input.tio

@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+lua /opt/threead/main.lua .code.tio "$@" < .input.tio
